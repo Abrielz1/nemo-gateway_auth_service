@@ -1,0 +1,101 @@
+package com.nemo.gateway_auth_service.app.domain.model.parent;
+
+import com.nemo.gateway_auth_service.app.domain.model.enums.RoleType;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.NamedAttributeNode;
+import jakarta.persistence.NamedEntityGraph;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.util.HashSet;
+import java.util.Set;
+
+@NamedEntityGraph(
+        name = "User.withRoles",
+        attributeNodes = @NamedAttributeNode("roles")
+)
+
+@NamedEntityGraph(
+        name = "User.withAllDetails",
+        attributeNodes = {
+                @NamedAttributeNode("roles"),
+                @NamedAttributeNode("userEmails"),
+                @NamedAttributeNode("userPhones"),
+                @NamedAttributeNode("userLogins")
+        }
+)
+
+@Entity
+@Table(name = "users", schema = "security")
+@Getter
+@Setter
+@SuperBuilder
+@ToString()
+@Inheritance(strategy = InheritanceType.JOINED)
+@NoArgsConstructor
+public abstract class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "date_of_birth", nullable = false)
+    private LocalDate dateOfBirth;
+
+    @Column(name = "last_login_timestamp")
+    private ZonedDateTime  lastLogin;
+
+
+    @Column(name = "enabled")
+    private Boolean enabled = false;
+
+    @Version
+    private Long version = 0L;
+
+    @Column(name = "registration_timestamp")
+    @ToString.Include
+    private ZonedDateTime registrationDateTime;
+
+    @ElementCollection(targetClass = RoleType.class, fetch = FetchType.LAZY)
+    @CollectionTable(name = "user_roles", schema = "security", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role", nullable = false)
+    @Enumerated(EnumType.STRING)
+    @ToString.Exclude
+    private Set<RoleType> roles = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private Set<EmailData> userEmails = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private Set<PasswordData> userPasswords = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private Set<PhoneData> userPhones = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private Set<LoginData> userLogins = new HashSet<>();
+}
