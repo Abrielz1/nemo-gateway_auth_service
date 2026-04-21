@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS security.employees (
 CREATE TABLE IF NOT EXISTS security.customers (
 id                       BIGINT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
 registration_source     VARCHAR(255),
-is_banned               BOOLEAN,
+is_banned               BOOLEAN NOT NULL DEFAULT false,
 invited_by_id           BIGINT,
 FOREIGN KEY (invited_by_id) REFERENCES security.users(id)
 );
@@ -92,6 +92,8 @@ CREATE INDEX idx_users_not_deleted ON security.users (is_deleted,id) WHERE is_de
 CREATE INDEX idx_users_registration ON security.users (registration_timestamp);
 CREATE INDEX idx_users_last_login ON security.users (last_login_timestamp);
 CREATE INDEX idx_users_dob ON security.users (date_of_birth);
+CREATE INDEX idx_users_registration_brin ON security.users USING brin (registration_timestamp); -- специально использую brin для ранжирования
+CREATE INDEX idx_users_active_registration ON security.users (is_deleted, registration_timestamp) WHERE is_deleted = false;
 
 CREATE INDEX idx_employees_mentor ON security.employees(mentor_id);
 

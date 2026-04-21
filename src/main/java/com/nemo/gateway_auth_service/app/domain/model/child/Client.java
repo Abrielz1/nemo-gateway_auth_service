@@ -9,6 +9,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,6 +32,7 @@ public class Client extends User {
     private String registrationSource;
 
     @Column(name = "is_banned", nullable = false)
+    @Builder.Default
     @ToString.Include
     private Boolean isBanned = false;
 
