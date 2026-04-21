@@ -25,6 +25,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.SQLRestriction;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.HashSet;
@@ -52,6 +53,7 @@ import java.util.Set;
 @SuperBuilder
 @ToString()
 @Inheritance(strategy = InheritanceType.JOINED)
+@SQLRestriction("is_deleted = false")
 @NoArgsConstructor
 public abstract class User {
 
@@ -65,9 +67,14 @@ public abstract class User {
     @Column(name = "last_login_timestamp")
     private ZonedDateTime  lastLogin;
 
-
-    @Column(name = "enabled")
+    @Column(name = "is_enabled")
     private Boolean enabled = false;
+
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted = false;
+
+    @Column(name = "deleted_at")
+    private ZonedDateTime deletedAt;
 
     @Version
     private Long version = 0L;

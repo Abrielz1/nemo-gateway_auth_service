@@ -46,7 +46,7 @@ public class PhoneData {
     private User user;
 
     @Version
-    private Long version;
+    private Long version = 0L;
 
     @Override
     public final boolean equals(Object o) {

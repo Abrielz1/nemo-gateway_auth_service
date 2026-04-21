@@ -34,7 +34,7 @@ public class LoginData {
     @Column(name = "id", updatable = false)
     private Long id;
 
-    @Column(name = "login", nullable = false, length = 128)
+    @Column(name = "login", nullable = false, unique = true, length = 256)
     private String login;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -43,7 +43,7 @@ public class LoginData {
     private User user;
 
     @Version
-    private Long version;
+    private Long version = 0L;
 
     @Override
     public final boolean equals(Object o) {

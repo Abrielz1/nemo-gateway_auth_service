@@ -38,7 +38,7 @@ public class PasswordData {
     @Column(name = "id", updatable = false)
     private Long id;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password", nullable = false, length = 2048)
     private String password;
 
     @Column(name = "time_when_set", nullable = false)
