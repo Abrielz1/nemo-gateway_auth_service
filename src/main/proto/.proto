@@ -1,0 +1,58 @@
+syntax = "proto3";
+package auth;
+
+option java_multiple_files = true;
+option java_package = "com.nemo.auth.grpc";
+
+import "google/protobuf/empty.proto";
+
+service AuthService {
+
+  rpc Register (RegisterRequest) returns (AuthResponse);
+
+  rpc Login (LoginRequest) returns (AuthResponse);
+
+  rpc Refresh (RefreshRequest) returns (AuthResponse);
+
+  rpc Logout (LogoutRequest) returns (google.protobuf.Empty);
+}
+
+message RegisterRequest {
+  string username = 1;
+  string email = 2;
+  string phone = 3;
+  string password = 4;
+  string date_of_birth = 5; // формат я установил как  ISO 8601 YYYY-MM-DD
+}
+
+message RefreshRequest {
+  string access_token = 1;
+  string refresh_token = 2;
+}
+
+message LogoutRequest {
+  string access_token = 1;
+  string refresh_token = 2;
+}
+
+message AuthResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+}
+
+message LoginRequest {
+  string identifier = 1;
+  string password = 2;
+}
+
+
+
+
+
+
+
+
+
+
+
+

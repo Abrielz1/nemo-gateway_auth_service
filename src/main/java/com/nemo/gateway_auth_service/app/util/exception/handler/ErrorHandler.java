@@ -1,21 +1,20 @@
 package com.nemo.gateway_auth_service.app.util.exception.handler;
 
+import com.nemo.gateway_auth_service.app.util.exception.exceptions.AccountNotFoundException;
+import com.nemo.gateway_auth_service.app.util.exception.exceptions.AlreadyExistsException;
+import com.nemo.gateway_auth_service.app.util.exception.exceptions.BadRequestException;
+import com.nemo.gateway_auth_service.app.util.exception.exceptions.ProcessingInterruptedException;
+import com.nemo.gateway_auth_service.app.util.exception.exceptions.SessionNotFoundException;
+import com.nemo.gateway_auth_service.app.util.exception.exceptions.UserNotFoundException;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.PessimisticLockException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.example.account.shared.exception.exceptions.AccessDeniedException;
-import ru.example.account.shared.exception.exceptions.AccountNotFoundException;
-import ru.example.account.shared.exception.exceptions.AlreadyExistsException;
-import ru.example.account.shared.exception.exceptions.BadRequestException;
-import ru.example.account.shared.exception.exceptions.ProcessingInterruptedException;
-import ru.example.account.shared.exception.exceptions.SessionNotFoundException;
-import ru.example.account.shared.exception.exceptions.UserNotFoundException;
-
 import java.util.Objects;
 
 @Slf4j
