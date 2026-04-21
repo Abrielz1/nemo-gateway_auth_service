@@ -45,6 +45,16 @@ message LoginRequest {
   string password = 2;
 }
 
+service RegistrationService {
+  rpc Register (RegisterRequest) returns (AuthResponse);
+}
+
+service LoginService {
+  rpc Login (LoginRequest) returns (AuthResponse);
+  rpc Refresh (RefreshRequest) returns (AuthResponse);
+  rpc Logout (LogoutRequest) returns (google.protobuf.Empty);
+}
+
 
 
 
