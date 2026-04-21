@@ -25,7 +25,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.JdbcType;
 import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.dialect.type.PostgreSQLEnumJdbcType;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.HashSet;
@@ -87,6 +89,7 @@ public abstract class User {
     @CollectionTable(name = "user_roles", schema = "security", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     @ToString.Exclude
     private Set<RoleType> roles = new HashSet<>();
 

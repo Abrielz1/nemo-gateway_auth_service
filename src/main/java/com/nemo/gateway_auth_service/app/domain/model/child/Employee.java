@@ -9,7 +9,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
-import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -51,9 +50,6 @@ public class Employee extends User {
     @JoinColumn(name = "mentor_id")
     @ToString.Exclude
     private Employee mentor;
-
-    @Version
-    private Long version = 0L;
 
     @OneToMany(mappedBy = "mentor")
     @ToString.Exclude

@@ -8,7 +8,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
-import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,10 +32,7 @@ public class Client extends User {
 
     @Column(name = "is_banned", nullable = false)
     @ToString.Include
-    private Boolean isBanned;
-
-    @Version
-    private Long version = 0L;
+    private Boolean isBanned = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "invited_by_id")

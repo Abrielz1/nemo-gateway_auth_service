@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS security.user_roles (
     FOREIGN KEY (user_id) REFERENCES security.users(id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS employees (
+CREATE TABLE IF NOT EXISTS security.employees (
  id                      BIGINT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
  hire_date               DATE NOT NULL,
  employee_internal_id    VARCHAR(100) UNIQUE NOT NULL,
@@ -41,16 +41,14 @@ CREATE TABLE IF NOT EXISTS employees (
  position                VARCHAR(255),
  department              VARCHAR(255),
  security_cleared        BOOLEAN NOT NULL DEFAULT false,
- version                 BIGINT NOT NULL DEFAULT 0,
  mentor_id               BIGINT,
  FOREIGN KEY (mentor_id) REFERENCES security.employees(id)
 );
 
-CREATE TABLE IF NOT EXISTS customers (
+CREATE TABLE IF NOT EXISTS security.customers (
 id                       BIGINT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
 registration_source     VARCHAR(255),
 is_banned               BOOLEAN,
-version                 BIGINT NOT NULL DEFAULT 0,
 invited_by_id           BIGINT,
 FOREIGN KEY (invited_by_id) REFERENCES security.users(id)
 );
@@ -89,8 +87,6 @@ CREATE TABLE IF NOT EXISTS security.phone_data(
  user_id                 BIGINT NOT NULL,
  FOREIGN KEY (user_id)   REFERENCES security.users(id) ON DELETE CASCADE
 );
-
-CREATE INDEX idx_users_roles_users ON security.user_roles(user_id);
 
 CREATE INDEX idx_users_not_deleted ON security.users (is_deleted,id) WHERE is_deleted = false;
 CREATE INDEX idx_users_registration ON security.users (registration_timestamp);
