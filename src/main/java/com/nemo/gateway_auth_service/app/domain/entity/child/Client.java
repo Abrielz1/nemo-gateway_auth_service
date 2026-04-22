@@ -1,6 +1,6 @@
-package com.nemo.gateway_auth_service.app.domain.model.child;
+package com.nemo.gateway_auth_service.app.domain.entity.child;
 
-import com.nemo.gateway_auth_service.app.domain.model.parent.User;
+import com.nemo.gateway_auth_service.app.domain.entity.parent.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

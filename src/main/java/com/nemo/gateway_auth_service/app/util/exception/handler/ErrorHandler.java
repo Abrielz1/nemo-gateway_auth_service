@@ -1,118 +1,28 @@
 package com.nemo.gateway_auth_service.app.util.exception.handler;
 
-import com.nemo.gateway_auth_service.app.util.exception.exceptions.AccountNotFoundException;
-import com.nemo.gateway_auth_service.app.util.exception.exceptions.AlreadyExistsException;
-import com.nemo.gateway_auth_service.app.util.exception.exceptions.BadRequestException;
-import com.nemo.gateway_auth_service.app.util.exception.exceptions.ProcessingInterruptedException;
-import com.nemo.gateway_auth_service.app.util.exception.exceptions.SessionNotFoundException;
-import com.nemo.gateway_auth_service.app.util.exception.exceptions.UserNotFoundException;
-import jakarta.persistence.OptimisticLockException;
-import jakarta.persistence.PessimisticLockException;
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
-import java.util.Objects;
+import net.devh.boot.grpc.server.advice.GrpcAdvice;
+import net.devh.boot.grpc.server.advice.GrpcExceptionHandler;
+import java.util.stream.Collectors;
 
 @Slf4j
-@RestControllerAdvice
+@GrpcAdvice
 public class ErrorHandler {
 
-    @ExceptionHandler(ProcessingInterruptedException.class)
-    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
-    public ErrorResponse handleProcessingInterruptedException(ProcessingInterruptedException exception) {
-        log.warn("Processing interrupted at page {}:", exception.getMessage());
-        return new ErrorResponse("Processing temporarily unavailable", exception.getMessage());
-    }
+    @GrpcExceptionHandler(ConstraintViolationException.class)
+    public StatusRuntimeException handleValidationException(ConstraintViolationException ex) {
 
-    @ExceptionHandler(AccountNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleAccountNotFoundException(AccountNotFoundException exception) {
-        log.error("No such entity as requested account");
-        return new ErrorResponse("No such entity as requested account", exception.getMessage());
-    }
+        var errorMessage = ex.getConstraintViolations().stream()
+                .map(v -> v.getPropertyPath() + ";" + v.getMessage())
+                .collect(Collectors.joining(", "));
 
-    @ExceptionHandler(SessionNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleAccountNotFoundException(SessionNotFoundException exception) {
-        log.error("No such entity as requested account");
-        return new ErrorResponse("No such entity as requested account", exception.getMessage());
-    }
-
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleDataIntegrityViolation(DataIntegrityViolationException ex) {
-        log.error("Database constraint violation: {}", ex.getMessage());
-
-        return new ErrorResponse("Data integrity violation", Objects.requireNonNull(ex.getRootCause()).getMessage());
-    }
-
-    @ExceptionHandler(PessimisticLockException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handlePessimisticLockException(PessimisticLockException ex) {
-        log.error("Database lock conflict: {}", ex.getMessage());
-        return new ErrorResponse("Operation conflicted with another transaction. Try again later.", ex.getMessage());
-    }
-
-    @ExceptionHandler(IllegalStateException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handlePessimisticLockException(IllegalStateException ex) {
-        log.error("Database lock conflict: {}", ex.getMessage());
-        return new ErrorResponse("Users id didnt match!", ex.getMessage());
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleIllegalArgument(IllegalArgumentException ex) {
-        log.warn("Validation error: {}", ex.getMessage());
-        return new ErrorResponse(ex.getMessage(), ex.getLocalizedMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handlerNotFoundException(final UserNotFoundException e) {
-
-        log.warn("404 {}", e.getMessage(), e);
-        return new ErrorResponse("User was not found 404", e.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handlerBadRequest(final BadRequestException e) {
-
-        log.warn("400 {}", e.getMessage(), e);
-        return new ErrorResponse("Bad request was committed 400 ", e.getMessage());
-    }
-
-    @ExceptionHandler(AccessDeniedException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ErrorResponse handleAccessDeniedException(AccessDeniedException ex) {
-        log.warn("403 {}", ex.getMessage(), ex);
-        return new ErrorResponse("Access denied", ex.getMessage());
-    }
-
-    @ExceptionHandler(AlreadyExistsException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleAlreadyExistsException(AlreadyExistsException ex) {
-        log.warn("409 {}", ex.getMessage(), ex);
-        return new ErrorResponse("Resource already exists", ex.getMessage());
-    }
-
-    @ExceptionHandler(OptimisticLockException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleOptimisticLockException(OptimisticLockException ex) {
-        log.error("Concurrent modification: {}", ex.getMessage());
-        return new ErrorResponse("Data was updated by another user. Please retry.", ex.getMessage());
-    }
-
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleInternalServerError(Exception ex) {
-        log.error("Internal server error: {}", ex.getMessage(), ex);
-        return new ErrorResponse("Internal server error", ex.getMessage());
+        log.warn("[WARN] Validation failed: {}", errorMessage);
+        return Status.INVALID_ARGUMENT
+                .withDescription(errorMessage)
+                .asRuntimeException();
     }
 }
 

@@ -1,6 +1,6 @@
-package com.nemo.gateway_auth_service.app.domain.model.parent;
+package com.nemo.gateway_auth_service.app.domain.entity.parent;
 
-import com.nemo.gateway_auth_service.app.domain.model.enums.RoleType;
+import com.nemo.gateway_auth_service.app.domain.entity.enums.RoleType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;

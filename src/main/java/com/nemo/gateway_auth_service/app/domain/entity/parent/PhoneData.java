@@ -1,4 +1,4 @@
-package com.nemo.gateway_auth_service.app.domain.model.parent;
+package com.nemo.gateway_auth_service.app.domain.entity.parent;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,36 +19,26 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
-import java.time.Instant;
 import java.util.Objects;
 
-@NamedEntityGraph(name = "PasswordData.withUser", attributeNodes = @NamedAttributeNode("user"))
+@NamedEntityGraph(name = "PhoneData.withUser", attributeNodes = @NamedAttributeNode("user"))
 @Getter
 @Setter
 @Builder
 @ToString
 @NoArgsConstructor
-@Entity
-@Table(name = "password_data", schema = "security")
 @AllArgsConstructor
-public class PasswordData {
+@Entity
+@Table(name = "phone_data", schema = "security")
+public class PhoneData {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
     private Long id;
 
-    @Column(name = "password", nullable = false, length = 2048)
-    private String password;
-
-    @Column(name = "time_when_set", nullable = false)
-    private Instant timeWhenSet;
-
-    @Column(name = "time_to_live", nullable = false)
-    private Instant timeToLive;
-
-    @Column(name = "is_active", nullable = false)
-    private Boolean isActive;
+    @Column(name = "phone", unique = true, nullable = false)
+    private String phone;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
@@ -56,7 +46,7 @@ public class PasswordData {
     private User user;
 
     @Version
-    private Long version;
+    private Long version = 0L;
 
     @Override
     public final boolean equals(Object o) {
@@ -65,8 +55,8 @@ public class PasswordData {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        PasswordData passwordData = (PasswordData) o;
-        return getId() != null && Objects.equals(getId(), passwordData.getId());
+        PhoneData phoneData = (PhoneData) o;
+        return getId() != null && Objects.equals(getId(), phoneData.getId());
     }
 
     @Override

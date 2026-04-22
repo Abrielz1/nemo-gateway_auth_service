@@ -1,4 +1,4 @@
-package com.nemo.gateway_auth_service.app.domain.model.parent;
+package com.nemo.gateway_auth_service.app.domain.entity.parent;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

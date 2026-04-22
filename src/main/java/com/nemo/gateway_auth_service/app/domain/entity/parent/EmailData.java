@@ -1,4 +1,4 @@
-package com.nemo.gateway_auth_service.app.domain.model.parent;
+package com.nemo.gateway_auth_service.app.domain.entity.parent;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,24 +21,24 @@ import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
 import java.util.Objects;
 
-@NamedEntityGraph(name = "PhoneData.withUser", attributeNodes = @NamedAttributeNode("user"))
+@NamedEntityGraph(name = "EmailData.withUser", attributeNodes = @NamedAttributeNode("user"))
 @Getter
 @Setter
 @Builder
 @ToString
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
-@Table(name = "phone_data", schema = "security")
-public class PhoneData {
+@Table(name = "email_data", schema = "security")
+@AllArgsConstructor
+public class EmailData {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
     private Long id;
 
-    @Column(name = "phone", unique = true, nullable = false)
-    private String phone;
+    @Column(name = "email", unique = true, nullable = false)
+    private String email;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
@@ -46,7 +46,7 @@ public class PhoneData {
     private User user;
 
     @Version
-    private Long version = 0L;
+    private Long version;
 
     @Override
     public final boolean equals(Object o) {
@@ -55,8 +55,8 @@ public class PhoneData {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        PhoneData phoneData = (PhoneData) o;
-        return getId() != null && Objects.equals(getId(), phoneData.getId());
+        EmailData emailData = (EmailData) o;
+        return getId() != null && Objects.equals(getId(), emailData.getId());
     }
 
     @Override

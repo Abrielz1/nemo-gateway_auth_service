@@ -1,4 +1,4 @@
-package com.nemo.gateway_auth_service.app.util;
+package com.nemo.gateway_auth_service.app.util.cripto;
 
 import com.nemo.gateway_auth_service.app.util.exception.exceptions.EncryptionDataFailureException;
 import jakarta.annotation.PostConstruct;
