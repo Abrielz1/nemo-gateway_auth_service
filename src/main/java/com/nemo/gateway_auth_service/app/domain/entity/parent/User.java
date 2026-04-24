@@ -42,6 +42,7 @@ import java.util.Set;
         name = "User.withAllDetails",
         attributeNodes = {
                 @NamedAttributeNode("roles"),
+                @NamedAttributeNode("userPasswords"),
                 @NamedAttributeNode("userEmails"),
                 @NamedAttributeNode("userPhones"),
                 @NamedAttributeNode("userLogins")
@@ -108,4 +109,24 @@ public abstract class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @ToString.Exclude
     private Set<LoginData> userLogins = new HashSet<>();
+
+    public void addEmailData(EmailData emailData) {
+        this.userEmails.add(emailData);
+        emailData.setUser(this);
+    }
+
+    public void addPasswordData(PasswordData passwordData) {
+        this.userPasswords.add(passwordData);
+        passwordData.setUser(this);
+    }
+
+    public void addPhoneData(PhoneData phoneData) {
+        this.userPhones.add(phoneData);
+        phoneData.setUser(this);
+    }
+
+    public void addLoginData(LoginData loginData) {
+        this.userLogins.add(loginData);
+        loginData.setUser(this);
+    }
 }

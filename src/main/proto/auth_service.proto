@@ -6,63 +6,72 @@ option java_package = "com.nemo.auth.grpc";
 
 import "google/protobuf/empty.proto";
 
-service AuthService {
-
-  rpc Register (RegisterRequest) returns (AuthResponse);
-
-  rpc Login (LoginRequest) returns (AuthResponse);
-
-  rpc Refresh (RefreshRequest) returns (AuthResponse);
-
-  rpc Logout (LogoutRequest) returns (google.protobuf.Empty);
+service ClientRegistrationService {
+  rpc Register (ClientRegisterRequest) returns (ClientAuthResponse);
+}
+service EmployeeRegistrationService {
+  rpc Register (EmployeeRegisterRequest) returns (EmployeeAuthResponse); // Поправлена опечатка
 }
 
-message RegisterRequest {
+service ClientLoginService {
+  rpc Login (ClientLoginRequest) returns (ClientAuthResponse);
+  rpc Refresh (ClientRefreshRequest) returns (ClientAuthResponse);
+  rpc Logout (ClientLogoutRequest) returns (google.protobuf.Empty);
+}
+service EmployeeLoginService {
+  rpc Login (EmployeeLoginRequest) returns (EmployeeAuthResponse);
+  rpc Refresh (EmployeeRefreshRequest) returns (EmployeeAuthResponse);
+  rpc Logout (EmployeeLogoutRequest) returns (google.protobuf.Empty);
+}
+
+message ClientRegisterRequest {
   string username = 1;
   string email = 2;
   string phone = 3;
   string password = 4;
-  string date_of_birth = 5; // формат я установил как  ISO 8601 YYYY-MM-DD
+  string date_of_birth = 5;
 }
 
-message RefreshRequest {
-  string access_token = 1;
-  string refresh_token = 2;
+message EmployeeRegisterRequest {
+  string username = 1;
+  string email = 2;
+  string phone = 3;
+  string password = 4;
+  string date_of_birth = 5;
 }
 
-message LogoutRequest {
-  string access_token = 1;
-  string refresh_token = 2;
-}
-
-message AuthResponse {
-  string access_token = 1;
-  string refresh_token = 2;
-}
-
-message LoginRequest {
+message ClientLoginRequest {
   string identifier = 1;
   string password = 2;
 }
 
-service RegistrationService {
-  rpc Register (RegisterRequest) returns (AuthResponse);
+message EmployeeLoginRequest {
+  string identifier = 1;
+  string password = 2;
 }
 
-service LoginService {
-  rpc Login (LoginRequest) returns (AuthResponse);
-  rpc Refresh (RefreshRequest) returns (AuthResponse);
-  rpc Logout (LogoutRequest) returns (google.protobuf.Empty);
+message ClientRefreshRequest {
+  string refresh_token = 1;
 }
 
+message EmployeeRefreshRequest {
+  string refresh_token = 1;
+}
 
+message ClientLogoutRequest {
+  string refresh_token = 1;
+}
 
+message EmployeeLogoutRequest {
+  string refresh_token = 1;
+}
 
+message ClientAuthResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+}
 
-
-
-
-
-
-
-
+message EmployeeAuthResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+}
