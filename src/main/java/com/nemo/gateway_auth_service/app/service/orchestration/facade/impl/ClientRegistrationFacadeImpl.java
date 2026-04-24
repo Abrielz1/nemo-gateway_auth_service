@@ -15,7 +15,6 @@ import org.springframework.validation.annotation.Validated;
 @RequiredArgsConstructor
 public class ClientRegistrationFacadeImpl implements ClientRegistrationFacade {
 
-
     private final ClientRegistrationWorker clientRegistrationWorker;
 
 

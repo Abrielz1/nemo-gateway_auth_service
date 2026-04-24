@@ -12,8 +12,10 @@ public class ClientFrom {
     public ClientAuthResponse toGrpcResponse(ClientRegistrationResponseDto clientRegistrationResponseDto) {
 
         return ClientAuthResponse.newBuilder()
-                .setAccessToken(clientRegistrationResponseDto.accessToken())
-                .setRefreshToken(clientRegistrationResponseDto.refreshToken())
+                .setAccessToken("")
+                .setRefreshToken("")
+                .setUserId(clientRegistrationResponseDto.userId())
+                .addAllContacts(clientRegistrationResponseDto.contacts())
                 .build();
     }
 }

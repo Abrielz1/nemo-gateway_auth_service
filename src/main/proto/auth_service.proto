@@ -69,9 +69,13 @@ message EmployeeLogoutRequest {
 message ClientAuthResponse {
   string access_token = 1;
   string refresh_token = 2;
+  string user_id = 3;
+  repeated string contacts = 4;
 }
 
 message EmployeeAuthResponse {
   string access_token = 1;
   string refresh_token = 2;
+  string user_id = 3;
+  repeated string contacts = 4;
 }
