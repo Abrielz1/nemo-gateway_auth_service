@@ -1,5 +1,6 @@
 package com.nemo.gateway_auth_service.app.util.mapper.client.to;
 
+import com.nemo.auth.grpc.ClientLoginRequest;
 import com.nemo.auth.grpc.ClientRegisterRequest;
 import com.nemo.gateway_auth_service.app.domain.entity.child.Client;
 import com.nemo.gateway_auth_service.app.domain.entity.enums.RoleType;
@@ -7,6 +8,7 @@ import com.nemo.gateway_auth_service.app.domain.entity.parent.EmailData;
 import com.nemo.gateway_auth_service.app.domain.entity.parent.LoginData;
 import com.nemo.gateway_auth_service.app.domain.entity.parent.PasswordData;
 import com.nemo.gateway_auth_service.app.domain.entity.parent.PhoneData;
+import com.nemo.gateway_auth_service.web.model.request.ClientLoginRequestDTO;
 import com.nemo.gateway_auth_service.web.model.request.ClientRegistrationRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -71,7 +73,7 @@ public class ClientTo {
         return client;
     }
 
-    public ClientRegistrationRequestDTO toCommand(ClientRegisterRequest clientRegisterRequest) {
+    public ClientRegistrationRequestDTO toRegisterRequest(ClientRegisterRequest clientRegisterRequest) {
 
         return ClientRegistrationRequestDTO.builder()
                 .username(clientRegisterRequest.getUsername())
@@ -79,6 +81,14 @@ public class ClientTo {
                 .phone(clientRegisterRequest.getPhone())
                 .password(clientRegisterRequest.getPassword())
                 .dateOfBirth(clientRegisterRequest.getDateOfBirth())
+                .build();
+    }
+
+    public ClientLoginRequestDTO toLoginRequest(ClientLoginRequest request) {
+
+        return ClientLoginRequestDTO.builder()
+                .clientIdentifier(request.getIdentifier())
+                .password(request.getPassword())
                 .build();
     }
 }

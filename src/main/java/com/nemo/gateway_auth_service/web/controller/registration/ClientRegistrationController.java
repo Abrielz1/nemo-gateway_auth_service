@@ -24,7 +24,7 @@ public class ClientRegistrationController extends com.nemo.auth.grpc.ClientRegis
     @Override
     public void register(ClientRegisterRequest request, StreamObserver<ClientAuthResponse> responseObserver) {
     try {
-      var response = this.clientRegistrationFacade.register(this.clientTo.toCommand(request));
+      var response = this.clientRegistrationFacade.register(this.clientTo.toRegisterRequest(request));
 
       var clientAuthResponse = this.clientFrom.toGrpcResponse(response);
       responseObserver.onNext(clientAuthResponse);

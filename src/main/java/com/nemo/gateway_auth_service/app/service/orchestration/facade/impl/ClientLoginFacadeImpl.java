@@ -1,6 +1,8 @@
 package com.nemo.gateway_auth_service.app.service.orchestration.facade.impl;
 
 import com.nemo.gateway_auth_service.app.service.orchestration.facade.ClientLoginFacade;
+import com.nemo.gateway_auth_service.web.model.request.ClientLoginRequestDTO;
+import com.nemo.gateway_auth_service.web.model.response.AuthTokenDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,4 +16,9 @@ public class ClientLoginFacadeImpl implements ClientLoginFacade {
 
 
 
+
+    @Override
+    public AuthTokenDto login(ClientLoginRequestDTO loginRequest) {
+        return null;
+    }
 }
