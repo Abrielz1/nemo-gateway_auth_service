@@ -16,6 +16,7 @@ $$;
 
 CREATE TABLE IF NOT EXISTS security.users(
   id                        BIGSERIAL PRIMARY KEY NOT NULL,
+  user_uuid                 UUID UNIQUE NOT NULL,
   date_of_birth             DATE NOT NULL,
   is_enabled                BOOLEAN NOT NULL,
   is_deleted                BOOLEAN NOT NULL DEFAULT false,
@@ -26,15 +27,14 @@ CREATE TABLE IF NOT EXISTS security.users(
 );
 
 CREATE TABLE IF NOT EXISTS security.user_roles (
-
     user_id BIGINT NOT NULL,
-    role role_type_enum NOT NULL,
+    role security.role_type_enum NOT NULL,
     PRIMARY KEY (user_id, role),
     FOREIGN KEY (user_id) REFERENCES security.users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS security.employees (
- id                      BIGINT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+ user_id                 BIGINT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
  hire_date               DATE NOT NULL,
  employee_internal_id    VARCHAR(100) UNIQUE NOT NULL,
  termination_date        DATE,
@@ -42,11 +42,11 @@ CREATE TABLE IF NOT EXISTS security.employees (
  department              VARCHAR(255),
  security_cleared        BOOLEAN NOT NULL DEFAULT false,
  mentor_id               BIGINT,
- FOREIGN KEY (mentor_id) REFERENCES security.employees(id)
+ FOREIGN KEY (mentor_id) REFERENCES security.employees(user_id)
 );
 
 CREATE TABLE IF NOT EXISTS security.customers (
-id                       BIGINT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+user_id                 BIGINT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
 registration_source     VARCHAR(255),
 is_banned               BOOLEAN NOT NULL DEFAULT false,
 invited_by_id           BIGINT,
@@ -89,7 +89,6 @@ CREATE TABLE IF NOT EXISTS security.phone_data(
 );
 
 CREATE INDEX idx_users_not_deleted ON security.users (is_deleted,id) WHERE is_deleted = false;
-CREATE INDEX idx_users_registration ON security.users (registration_timestamp);
 CREATE INDEX idx_users_last_login ON security.users (last_login_timestamp);
 CREATE INDEX idx_users_dob ON security.users (date_of_birth);
 CREATE INDEX idx_users_registration_brin ON security.users USING brin (registration_timestamp); -- специально использую brin для ранжирования

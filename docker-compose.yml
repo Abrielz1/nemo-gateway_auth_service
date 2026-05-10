@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: security-db
+    ports:
+      - "${SECURITY_DB_PORT}:5432"
+    environment:
+      - POSTGRES_USER=${SECURITY_DB_USER}
+      - POSTGRES_PASSWORD=${SECURITY_DB_PASSWORD}
+      - POSTGRES_DB=${SECURITY_DB_NAME}
+    volumes:
+      - security_db_data:/var/lib/postgresql/data
+    networks:
+      - fintech-network
+    restart: on-failure
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${SECURITY_DB_USER}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  fintech-redis:
+    image: redis:7.0.12-alpine
+    container_name: ${REDIS_HOST}
+    ports:
+      - "${REDIS_PORT}:6379"
+    networks:
+      - fintech-network
+    restart: on-failure
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  security_db_data:
+
+networks:
+  fintech-network:
+    driver: bridge

@@ -5,6 +5,9 @@ import com.nemo.gateway_auth_service.web.model.response.AuthTokenDto;
 
 public interface ClientLoginFacade {
 
-
     AuthTokenDto login(ClientLoginRequestDTO loginRequest);
+
+    AuthTokenDto refresh(String refreshToken);
+
+    void logout(String refreshToken);
 }

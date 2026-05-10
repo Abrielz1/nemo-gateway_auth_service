@@ -8,6 +8,7 @@ import com.nemo.auth.grpc.ClientLogoutRequest;
 import com.nemo.auth.grpc.ClientRefreshRequest;
 import com.nemo.gateway_auth_service.app.service.orchestration.facade.ClientLoginFacade;
 import com.nemo.gateway_auth_service.app.util.mapper.client.to.ClientTo;
+import com.nemo.gateway_auth_service.web.model.request.ClientLogoutRequestDto;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,20 +26,37 @@ public class ClientLoginController extends ClientLoginServiceGrpc.ClientLoginSer
     @Override
     public void login(ClientLoginRequest request, StreamObserver<ClientAuthResponse> responseObserver) {
 
-        var loginRequest = this.clientTo.toLoginRequest(request);
-        var tokenDto = this.clientLoginFacade.login(loginRequest);
+        var tokenDto = this.clientLoginFacade.login(this.clientTo.toLoginRequest(request));
 
-       responseObserver.onNext(request);
+        var responseDto = ClientAuthResponse.newBuilder()
+                .setAccessToken(tokenDto.accessToken())
+                .setRefreshToken(tokenDto.refreshToken())
+                .setUserId(tokenDto.userId())
+                .build();
+
+       responseObserver.onNext(responseDto);
        responseObserver.onCompleted();
     }
 
     @Override
     public void refresh(ClientRefreshRequest request, StreamObserver<ClientAuthResponse> responseObserver) {
-        super.refresh(request, responseObserver);
+
+      var response = this.clientLoginFacade.refresh(request.getRefreshToken());
+      var responseDto = ClientAuthResponse.newBuilder()
+              .setAccessToken(response.accessToken())
+              .setRefreshToken(response.refreshToken())
+              .setUserId(response.userId())
+              .build();
+
+      responseObserver.onNext(responseDto);
+      responseObserver.onCompleted();
     }
 
     @Override
     public void logout(ClientLogoutRequest request, StreamObserver<Empty> responseObserver) {
-        super.logout(request, responseObserver);
+
+        this.clientLoginFacade.logout(
+                this.clientTo.toLogOutRequest(request).refreshToken()
+        );
     }
 }

@@ -1,6 +1,7 @@
 package com.nemo.gateway_auth_service.app.util.mapper.client.to;
 
 import com.nemo.auth.grpc.ClientLoginRequest;
+import com.nemo.auth.grpc.ClientLogoutRequest;
 import com.nemo.auth.grpc.ClientRegisterRequest;
 import com.nemo.gateway_auth_service.app.domain.entity.child.Client;
 import com.nemo.gateway_auth_service.app.domain.entity.enums.RoleType;
@@ -9,6 +10,7 @@ import com.nemo.gateway_auth_service.app.domain.entity.parent.LoginData;
 import com.nemo.gateway_auth_service.app.domain.entity.parent.PasswordData;
 import com.nemo.gateway_auth_service.app.domain.entity.parent.PhoneData;
 import com.nemo.gateway_auth_service.web.model.request.ClientLoginRequestDTO;
+import com.nemo.gateway_auth_service.web.model.request.ClientLogoutRequestDto;
 import com.nemo.gateway_auth_service.web.model.request.ClientRegistrationRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +21,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Set;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -36,6 +39,7 @@ public class ClientTo {
         }
 
         Client client = Client.builder()
+                .userUUID(UUID.randomUUID())
                 .dateOfBirth(dateOfBirth)
                 .enabled(true)
                 .isDeleted(false)
@@ -89,6 +93,13 @@ public class ClientTo {
         return ClientLoginRequestDTO.builder()
                 .clientIdentifier(request.getIdentifier())
                 .password(request.getPassword())
+                .build();
+    }
+
+    public ClientLogoutRequestDto toLogOutRequest(ClientLogoutRequest request) {
+
+        return ClientLogoutRequestDto.builder()
+                .refreshToken(request.getRefreshToken())
                 .build();
     }
 }

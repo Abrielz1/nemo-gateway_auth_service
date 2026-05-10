@@ -34,7 +34,7 @@ public class ClientRegistrationWorkerImpl  implements ClientRegistrationWorker {
 
             var newClientEntity = this.clientTo.toEntity(clientRegisterRequestDTO);
             var clientEntity = this.clientRepository.save(newClientEntity);
-            return new ClientRegistrationResponseDto(clientEntity.getId().toString(), new ArrayList<>(List.of(
+            return new ClientRegistrationResponseDto(clientEntity.getUserUUID().toString(), new ArrayList<>(List.of(
                     clientEntity.getUserLogins().stream().map(LoginData::getLogin).collect(Collectors.joining(", ")),
                     clientEntity.getUserEmails().stream().map(EmailData::getEmail).collect(Collectors.joining(", ")),
                     clientEntity.getUserPhones().stream().map(PhoneData::getPhone).collect(Collectors.joining(", "))

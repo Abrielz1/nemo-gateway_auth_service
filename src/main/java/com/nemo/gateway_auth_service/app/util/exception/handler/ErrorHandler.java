@@ -6,6 +6,8 @@ import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.server.advice.GrpcAdvice;
 import net.devh.boot.grpc.server.advice.GrpcExceptionHandler;
+import org.springframework.security.authentication.BadCredentialsException;
+
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -22,6 +24,15 @@ public class ErrorHandler {
         log.warn("[WARN] Validation failed: {}", errorMessage);
         return Status.INVALID_ARGUMENT
                 .withDescription(errorMessage)
+                .asRuntimeException();
+    }
+
+    @GrpcExceptionHandler(BadCredentialsException.class)
+    public StatusRuntimeException handleBadCredentialsException(BadCredentialsException ex) {
+        log.warn("[WARN] Bad credentials: {}", ex.getMessage());
+
+        return Status.UNAUTHENTICATED
+                .withDescription(ex.getMessage())
                 .asRuntimeException();
     }
 }

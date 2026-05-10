@@ -28,6 +28,7 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.dialect.type.PostgreSQLEnumJdbcType;
+import org.hibernate.validator.constraints.UUID;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.HashSet;
@@ -63,6 +64,10 @@ public abstract class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @UUID
+    @Column(name = "user_uuid", unique = true, nullable = false, updatable = false)
+    private java.util.UUID userUUID;
 
     @Column(name = "date_of_birth", nullable = false)
     private LocalDate dateOfBirth;
