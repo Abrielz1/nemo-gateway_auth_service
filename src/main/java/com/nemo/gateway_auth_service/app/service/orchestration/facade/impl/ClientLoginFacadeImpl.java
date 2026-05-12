@@ -4,8 +4,10 @@ import com.nemo.gateway_auth_service.app.service.orchestration.facade.ClientLogi
 import com.nemo.gateway_auth_service.app.service.orchestration.worker.ClientLogOutWorker;
 import com.nemo.gateway_auth_service.app.service.orchestration.worker.ClientLoginWorker;
 import com.nemo.gateway_auth_service.web.model.request.ClientLoginRequestDTO;
+import com.nemo.gateway_auth_service.web.model.request.ClientLogoutRequestDto;
 import com.nemo.gateway_auth_service.web.model.request.RefreshTokenRequestDto;
 import com.nemo.gateway_auth_service.web.model.response.AuthTokenDto;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -34,8 +36,8 @@ public class ClientLoginFacadeImpl implements ClientLoginFacade {
     }
 
     @Override
-    public void logout(String refreshToken) {
+    public void logout(@Valid ClientLogoutRequestDto requestDto) {
 
-        this.clientLogOutWorker.logout(refreshToken);
+        this.clientLogOutWorker.logout(requestDto);
     }
 }

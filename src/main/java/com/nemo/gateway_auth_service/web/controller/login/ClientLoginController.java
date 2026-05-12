@@ -8,11 +8,11 @@ import com.nemo.auth.grpc.ClientLogoutRequest;
 import com.nemo.auth.grpc.ClientRefreshRequest;
 import com.nemo.gateway_auth_service.app.service.orchestration.facade.ClientLoginFacade;
 import com.nemo.gateway_auth_service.app.util.mapper.client.to.ClientTo;
-import com.nemo.gateway_auth_service.web.model.request.ClientLogoutRequestDto;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.server.service.GrpcService;
+import org.springframework.security.authentication.BadCredentialsException;
 
 @Slf4j
 @GrpcService
@@ -54,9 +54,15 @@ public class ClientLoginController extends ClientLoginServiceGrpc.ClientLoginSer
 
     @Override
     public void logout(ClientLogoutRequest request, StreamObserver<Empty> responseObserver) {
-
+    try {
         this.clientLoginFacade.logout(
-                this.clientTo.toLogOutRequest(request).refreshToken()
+                this.clientTo.toLogOutRequest(request)
         );
+    } catch (BadCredentialsException e) {
+        log.warn("Logout warning: {}", e.getMessage());
+    }
+
+       responseObserver.onNext(Empty.getDefaultInstance());
+       responseObserver.onCompleted();
     }
 }
